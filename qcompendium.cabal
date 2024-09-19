@@ -1,0 +1,44 @@
+cabal-version:   3.6
+name:            qcompendium
+version:         0.1.0.0
+synopsis:        First attempt to understand QC with Haskell 
+author:          Λ
+maintainer:      sobakavosne@gmail.com
+category:        Math
+build-type:      Simple
+extra-doc-files:
+  doc/quantum.pdf
+  qcompendium.txt
+
+common shared-deps
+  build-depends:
+    , base
+    , containers
+
+  ghc-options:   -Wall
+
+library
+  import:           shared-deps
+  exposed-modules:
+    Example
+    Qcompendium
+
+  hs-source-dirs:   src
+  default-language: Haskell2010
+
+executable qcompendium
+  import:           shared-deps
+  main-is:          Main.hs
+  build-depends:    qcompendium
+  hs-source-dirs:   app
+  default-language: Haskell2010
+
+test-suite qcompendium-test
+  import:           shared-deps
+  default-language: Haskell2010
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   test
+  main-is:          Test.hs
+  build-depends:
+    , base         ^>=4.17.2.1
+    , qcompendium
