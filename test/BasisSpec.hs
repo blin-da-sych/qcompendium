@@ -43,7 +43,7 @@ spec = do
     it "retrieves amplitude for specific positive integers from qInteger" $
       forAll (choose (1, 1000)) $ \n -> do
         amplitude qInteger n `shouldBe` (1 / fromIntegral n)
-  describe "Probability Retrieval (pr)" $ do
+  describe "Probability Retrieval (amplitude)" $ do
     it "retrieves probability amplitude for Bool type" $
       property $ \b -> do
         let vector = qVector [(False, 1), (True, 0)]
