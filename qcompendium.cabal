@@ -6,22 +6,29 @@ author:          Λ
 maintainer:      sobakavosne@gmail.com
 category:        Math
 build-type:      Simple
+license:         MIT
+license-file:    LICENSE
 extra-doc-files:
-  doc/quantum.pdf
+  doc/Lecture_Notes_Programming_Quantum_Computers.pdf
+  doc/Modeling_Quantum_Computing_in_Haskell.pdf
+  doc/Quantum_Computing_as_a_High_School_Module.pdf
   qcompendium.txt
 
 common shared-deps
   build-depends:
     , base
     , containers
+    , hspec
+    , hspec-discover
+    , QuickCheck
 
   ghc-options:   -Wall
 
 library
   import:           shared-deps
   exposed-modules:
-    Example
-    Qcompendium
+    Basis
+    Pairs
 
   hs-source-dirs:   src
   default-language: Haskell2010
@@ -38,7 +45,9 @@ test-suite qcompendium-test
   default-language: Haskell2010
   type:             exitcode-stdio-1.0
   hs-source-dirs:   test
-  main-is:          Test.hs
-  build-depends:
-    , base         ^>=4.17.2.1
-    , qcompendium
+  main-is:          Spec.hs
+  other-modules:
+    BasisSpec
+    PairsSpec
+
+  build-depends:    qcompendium
