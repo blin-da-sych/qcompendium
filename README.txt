@@ -1,0 +1,31 @@
+Sources:
+  [1] Lecture Notes: Programming Quantum Computers
+        RWTH Aachen University
+          2022
+  [2] Modeling Quantum Computing in Haskell
+        Indiana University
+          2003
+  [3] Quantum Computing as a High School Module
+        Illinois Mathematics and Science Academy
+          2020
+
+Why AssocList is used instead of Map
+
+  The original solution [2] used Map to represent quantum vectors. However, 
+  Map in Haskell is based on balanced binary trees, specifically on the 
+  Adams' balanced trees algorithm, which is a variation of AVL trees. 
+  AVL trees maintain balance with every insertion or deletion, leading 
+  to immediate strict evaluation of keys. This provides logarithmic 
+  complexity for search and insertion operations but violates the laziness 
+  of the program, as keys must be evaluated during each insertion to maintain 
+  the balanced state of the tree.
+
+Quantum data
+
+  In Quantum Computing the following is accepted as a boolean type:
+
+    α |False〉 + β |True〉
+
+  where α and β are complex numbers representing probability
+  amplitudes, each constructor c is interpreted as a unit vector
+  |c〉, and + is vector addition.

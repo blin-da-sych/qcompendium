@@ -1,7 +1,0 @@
-In Quantum Computing the following is accepted as a boolean type:
-
-  α |False〉 + β |True〉
-
-where α and β are complex numbers representing probability
-amplitudes, each constructor c is interpreted as a unit vector
-|c〉, and + is vector addition.
