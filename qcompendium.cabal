@@ -12,7 +12,7 @@ extra-doc-files:
   doc/Lecture_Notes_Programming_Quantum_Computers.pdf
   doc/Modeling_Quantum_Computing_in_Haskell.pdf
   doc/Quantum_Computing_as_a_High_School_Module.pdf
-  qcompendium.txt
+  README.txt
 
 common shared-deps
   build-depends:
