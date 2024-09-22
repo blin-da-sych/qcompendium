@@ -1,4 +1,5 @@
 Sources:
+
   [1] Lecture Notes: Programming Quantum Computers
         RWTH Aachen University
           2022
@@ -20,12 +21,34 @@ Why AssocList is used instead of Map
   of the program, as keys must be evaluated during each insertion to maintain 
   the balanced state of the tree.
 
+Quantum notes
+
+  Superposition - a combination of several possible states:
+
+    ∣ψ⟩ = c1​∣φ1〉 + c2​∣φ2〉 + ⋯ + cn​∣φn〉
+
+  where probability amplitudes (c1, c2, ..., cn) should follow the normalization rule:
+
+    |c1|^2 + |c2|^2 + ... + |cn|^2 = 1
+
+  because a probability (P) can be found like the following:
+
+    P(i) = ∣ci​∣^2
+
+  "Why is it squared? The short answer is that it gives the correct experimental 
+  predictions for this choice of representation." [3]
+
 Quantum data
 
   In Quantum Computing the following is accepted as a boolean type:
 
-    α |False〉 + β |True〉
+    α|False〉 + β|True〉
 
   where α and β are complex numbers representing probability
   amplitudes, each constructor c is interpreted as a unit vector
   |c〉, and + is vector addition.
+
+  Entanglement in Quantum Computing is represented in this module as pairs of 
+  quantum vectors. When using the tensor product operation (&*), the resulting 
+  quantum vector reflects the entangled state of the combined systems, demonstrating 
+  the correlations between their states.
