@@ -58,13 +58,13 @@ type QV a = Map a PA
 -- | 'isNormalized' checks if a quantum vector is normalized.
 --   A normalized vector must have the sum of squared magnitudes of its
 --   probability amplitudes equal to 1 (within a small tolerance).
---   The check stops after examining up to 1000 elements, allowing for
---   the theoretical model to support an infinite number of elements.
+--   The check examines all elements in the 'Map', where the keys represent
+--   basis states and the values represent the corresponding probability amplitudes.
 --
---   Parameters:
---   - A Map of keys 'a' and probability amplitudes 'PA'
+--   ==== Parameters:
+--   - A 'Map' of keys 'a' (basis states) and probability amplitudes 'PA'
 --
---   Returns:
+--   ==== Returns:
 --   - 'Bool': 'True' if the vector is normalized, otherwise 'False'
 isNormalized :: (Ord a) => Map a PA -> Bool
 isNormalized m =
@@ -73,15 +73,15 @@ isNormalized m =
 -- | 'qVector' constructs a **normalized quantum vector** ('QV') from a Map of
 --   basis vector-amplitude pairs. It ensures the vector is normalized.
 --
---   Parameters:
+--   ==== Parameters:
 --   - Map of pairs @Map a PA@, where 'a' is the basis vector and 'PA' is
 --     the probability amplitude (a complex number)
 --
---   Returns:
+--   ==== Returns:
 --   - @QV a@: a quantum vector, represented as an association list of
 --     basis vectors and probability amplitudes
 --
---   Throws:
+--   ==== Throws:
 --   - An 'error' with the message *"The quantum vector is not normalized."*
 --     if the sum of squared magnitudes of the probability amplitudes does not equal 1.
 qVector :: Basis a => [(a, PA)] -> QV a
@@ -92,12 +92,12 @@ qVector qv
 -- | 'amplitude' returns the **probability amplitude** associated with a
 --   given unit vector in the quantum vector.
 --
---   Parameters:
+--   ==== Parameters:
 --   - @Map a PA@: a quantum vector represented as a map
 --     of basis vectors and probability amplitudes
 --   - 'a': the basis vector for which to retrieve the amplitude
 --
---   Returns:
+--   ==== Returns:
 --   - 'PA': the probability amplitude associated with the basis vector,
 --     or 0 if not found
 amplitude :: Basis a => QV a -> a -> PA

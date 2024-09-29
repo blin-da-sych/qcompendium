@@ -16,11 +16,11 @@ instance (Basis a, Basis b) => Basis (a, b) where
 --   be described independently of the state of the other, even when separated by
 --   large distances.
 --
---   Parameters:
+--   ==== Parameters:
 --   - @QV a@: the first quantum vector representing the state of the first system
 --   - @QV b@: the second quantum vector representing the state of the second system
 --
---   Returns:
+--   ==== Returns:
 --   - @QV (a, b)@: a quantum vector representing the tensor product of 'qa' and 'qb',
 --     embodying the combined state of the two systems that may be entangled.
 (&*) :: (Basis a, Basis b) => QV a -> QV b -> QV (a, b)
