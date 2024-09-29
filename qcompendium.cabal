@@ -28,6 +28,7 @@ library
   import:           shared-deps
   exposed-modules:
     Basis
+    BasisStrict
     Pairs
 
   hs-source-dirs:   src
@@ -48,6 +49,7 @@ test-suite qcompendium-test
   main-is:          Spec.hs
   other-modules:
     BasisSpec
+    BasisStrictSpec
     PairsSpec
 
   build-depends:    qcompendium

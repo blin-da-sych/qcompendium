@@ -1,6 +1,7 @@
-module Basis where
+module BasisStrict where
 
 import           Data.Complex (Complex, magnitude)
+import           Data.Map     (Map, elems, fromList, lookup)
 import           Data.Maybe   (fromMaybe)
 import           Prelude      hiding (lookup)
 
@@ -49,30 +50,10 @@ instance Basis Colour where
 --   a complex number.
 type PA = Complex Double
 
--- | 'AssocList' represents an association list of key-value pairs. It's
---   used instead of 'Map' due to its laziness, which is not guaranteed by 'Map'.
-type AssocList k v = [(k, v)]
-
 -- | 'QV' is a type alias for a **quantum vector space** (represented by a map).
 --   The map keys are basis vectors (of type 'a') and the values are complex
 --   probability amplitudes of type 'PA'.
-type QV a = AssocList a PA
-
--- | 'lookup' searches for a key in an 'AssocList'.
---   If the key is found, it returns 'Just' the associated value,
---   otherwise it returns 'Nothing'.
---
---   Parameters:
---   - 'key': the key of type 'k' to search for
---   - @AssocList k v@: an association list of key-value pairs
---
---   Returns:
---   - @Maybe v@: the value associated with the key, or 'Nothing' if not found
-lookup :: Eq k => k -> AssocList k v -> Maybe v
-lookup _ [] = Nothing
-lookup key ((k, v):xs)
-  | key == k = Just v
-  | otherwise = lookup key xs
+type QV a = Map a PA
 
 -- | 'isNormalized' checks if a quantum vector is normalized.
 --   A normalized vector must have the sum of squared magnitudes of its
@@ -81,26 +62,19 @@ lookup key ((k, v):xs)
 --   the theoretical model to support an infinite number of elements.
 --
 --   Parameters:
---   - A list of pairs @(a, PA)@, where 'a' is the basis vector and 'PA' is
---     the probability amplitude (a complex number)
+--   - A Map of keys 'a' and probability amplitudes 'PA'
 --
 --   Returns:
 --   - 'Bool': 'True' if the vector is normalized, otherwise 'False'
-isNormalized :: [(a, PA)] -> Bool
-isNormalized = go 0 1000
-  where
-    go :: Double -> Int -> [(a, PA)] -> Bool
-    go acc 0 _ = abs acc > 1 - 1e-9
-    go acc _ [] = acc > 1 - 1e-9
-    go acc n ((_, amp):xs)
-      | acc > 1 + 1e-9 = False
-      | otherwise = go (acc + magnitude amp ^ (2 :: Int)) (n - 1) xs
+isNormalized :: (Ord a) => Map a PA -> Bool
+isNormalized m =
+  abs (sum (map ((^ (2 :: Int)) . magnitude) (elems m)) - 1) < 1e-9
 
--- | 'qVector' constructs a **normalized quantum vector** ('QV') from a list of
+-- | 'qVector' constructs a **normalized quantum vector** ('QV') from a Map of
 --   basis vector-amplitude pairs. It ensures the vector is normalized.
 --
 --   Parameters:
---   - A list of pairs @(a, PA)@, where 'a' is the basis vector and 'PA' is
+--   - Map of pairs @Map a PA@, where 'a' is the basis vector and 'PA' is
 --     the probability amplitude (a complex number)
 --
 --   Returns:
@@ -112,32 +86,19 @@ isNormalized = go 0 1000
 --     if the sum of squared magnitudes of the probability amplitudes does not equal 1.
 qVector :: Basis a => [(a, PA)] -> QV a
 qVector qv
-  | isNormalized qv = qv
+  | (isNormalized . fromList) qv = fromList qv
   | otherwise = error "The quantum vector is not normalized."
 
 -- | 'amplitude' returns the **probability amplitude** associated with a
 --   given unit vector in the quantum vector.
 --
 --   Parameters:
---   - @AssocList a PA@: a quantum vector represented as an association list
+--   - @Map a PA@: a quantum vector represented as a map
 --     of basis vectors and probability amplitudes
 --   - 'a': the basis vector for which to retrieve the amplitude
 --
 --   Returns:
 --   - 'PA': the probability amplitude associated with the basis vector,
 --     or 0 if not found
-amplitude :: Basis a => AssocList a PA -> a -> PA
+amplitude :: Basis a => QV a -> a -> PA
 amplitude qvs k = fromMaybe 0 (lookup k qvs)
-
-instance Basis Integer where
-  basis = [0 ..]
-
--- | 'qInteger' represents an infinite quantum vector for 'Integer',
---   where the amplitude for each integer is given by the reciprocal of
---   the square root of 2 raised to the power of the integer (except for 0).
---
---   Returns:
---   - @QV Integer@: an infinite quantum vector for 'Integer', represented
---     as an association list of integers and probability amplitudes
-qInteger :: QV Integer
-qInteger = qVector [(i, 1 / sqrt (2 ^ i)) | i <- tail basis]
