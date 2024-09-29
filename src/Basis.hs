@@ -90,8 +90,8 @@ isNormalized :: [(a, PA)] -> Bool
 isNormalized = go 0 1000
   where
     go :: Double -> Int -> [(a, PA)] -> Bool
-    go acc 0 _ = abs acc > 1 - 1e-9
-    go acc _ [] = acc > 1 - 1e-9
+    go acc 0 _ = abs (acc - 1) < 1e-9
+    go acc _ [] = (acc - 1) < 1e-9
     go acc n ((_, amp):xs)
       | acc > 1 + 1e-9 = False
       | otherwise = go (acc + magnitude amp ^ (2 :: Int)) (n - 1) xs
