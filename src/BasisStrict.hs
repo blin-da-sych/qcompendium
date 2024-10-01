@@ -1,3 +1,14 @@
+{-|
+Module      : BasisStrict
+Description : Strict basis set for quantum vectors and probability amplitudes
+
+This module defines the 'Basis' class and its instances, representing the possible
+basis vectors for various types that can be used in quantum vector spaces. Unlike
+the lazy version, this implementation uses strict data structures such as 'Map' to
+enforce unique basis vectors and strict evaluation. This ensures that no duplicate
+basis vectors are allowed, and operations on quantum vectors are performed in a
+strict manner, making it more suitable for finite, concrete basis sets.
+-}
 module BasisStrict where
 
 import           Data.Complex (Complex, magnitude)
@@ -46,11 +57,11 @@ instance Basis Rotation where
 instance Basis Colour where
   basis = [Red, Yellow, Blue]
 
--- | Type alias 'PA' representing a **probability amplitude**, which is
+-- | Type alias 'PA' representing a __probability amplitude__, which is
 --   a complex number.
 type PA = Complex Double
 
--- | 'QV' is a type alias for a **quantum vector space** (represented by a map).
+-- | 'QV' is a type alias for a __quantum vector space__ (represented by a map).
 --   The map keys are basis vectors (of type 'a') and the values are complex
 --   probability amplitudes of type 'PA'.
 type QV a = Map a PA
@@ -61,27 +72,32 @@ type QV a = Map a PA
 --   The check examines all elements in the 'Map', where the keys represent
 --   basis states and the values represent the corresponding probability amplitudes.
 --
---   ==== Parameters:
+--   __Parameters:__
+--
 --   - A 'Map' of keys 'a' (basis states) and probability amplitudes 'PA'
 --
---   ==== Returns:
+--   __Returns:__
+--
 --   - 'Bool': 'True' if the vector is normalized, otherwise 'False'
-isNormalized :: (Ord a) => Map a PA -> Bool
+isNormalized :: (Basis a, Ord a) => Map a PA -> Bool
 isNormalized m =
   abs (sum (map ((^ (2 :: Int)) . magnitude) (elems m)) - 1) < 1e-9
 
--- | 'qVector' constructs a **normalized quantum vector** ('QV') from a Map of
+-- | 'qVector' constructs a __normalized quantum vector__ ('QV') from a Map of
 --   basis vector-amplitude pairs. It ensures the vector is normalized.
 --
---   ==== Parameters:
+--   __Parameters:__
+--
 --   - Map of pairs @Map a PA@, where 'a' is the basis vector and 'PA' is
 --     the probability amplitude (a complex number)
 --
---   ==== Returns:
---   - @QV a@: a quantum vector, represented as an association list of
+--   __Returns:__
+--
+--   - @QV a@: a quantum vector, represented as a Map of
 --     basis vectors and probability amplitudes
 --
---   ==== Throws:
+--   __Throws:__
+--
 --   - An 'error' with the message *"The quantum vector is not normalized."*
 --     if the sum of squared magnitudes of the probability amplitudes does not equal 1.
 qVector :: Basis a => [(a, PA)] -> QV a
@@ -89,15 +105,17 @@ qVector qv
   | (isNormalized . fromList) qv = fromList qv
   | otherwise = error "The quantum vector is not normalized."
 
--- | 'amplitude' returns the **probability amplitude** associated with a
+-- | 'amplitude' returns the __probability amplitude__ associated with a
 --   given unit vector in the quantum vector.
 --
---   ==== Parameters:
+--   __Parameters:__
+--
 --   - @Map a PA@: a quantum vector represented as a map
 --     of basis vectors and probability amplitudes
 --   - 'a': the basis vector for which to retrieve the amplitude
 --
---   ==== Returns:
+--   __Returns:__
+--
 --   - 'PA': the probability amplitude associated with the basis vector,
 --     or 0 if not found
 amplitude :: Basis a => QV a -> a -> PA

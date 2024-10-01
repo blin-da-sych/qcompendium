@@ -1,3 +1,17 @@
+{-|
+Module      : Basis
+Description : Lazy basis set for quantum vectors and probability amplitudes
+
+This module defines the 'Basis' class and its instances, which represent
+the possible basis vectors for various types that can be used in quantum
+vector spaces.
+
+Note that due to the lazy nature of the implementation, this module does
+not enforce uniqueness checks for the elements in the basis. Consequently,
+instances of the 'Basis' class can contain duplicate elements. It is the
+responsibility of the user to ensure that the basis is free of duplicates
+where necessary.
+-}
 module Basis where
 
 import           Data.Complex (Complex, magnitude)
@@ -45,7 +59,7 @@ instance Basis Rotation where
 instance Basis Colour where
   basis = [Red, Yellow, Blue]
 
--- | Type alias 'PA' representing a **probability amplitude**, which is
+-- | Type alias 'PA' representing a __probability amplitude__, which is
 --   a complex number.
 type PA = Complex Double
 
@@ -53,7 +67,7 @@ type PA = Complex Double
 --   used instead of 'Map' due to its laziness, which is not guaranteed by 'Map'.
 type AssocList k v = [(k, v)]
 
--- | 'QV' is a type alias for a **quantum vector space** (represented by a map).
+-- | 'QV' is a type alias for a __quantum vector space__ (represented by a map).
 --   The map keys are basis vectors (of type 'a') and the values are complex
 --   probability amplitudes of type 'PA'.
 type QV a = AssocList a PA
@@ -62,11 +76,13 @@ type QV a = AssocList a PA
 --   If the key is found, it returns 'Just' the associated value,
 --   otherwise it returns 'Nothing'.
 --
---   ==== Parameters:
+--   __Parameters:__
+--
 --   - 'key': the key of type 'k' to search for
 --   - @AssocList k v@: an association list of key-value pairs
 --
---   ==== Returns:
+--   __Returns:__
+--
 --   - @Maybe v@: the value associated with the key, or 'Nothing' if not found
 lookup :: Eq k => k -> AssocList k v -> Maybe v
 lookup _ [] = Nothing
@@ -80,34 +96,39 @@ lookup key ((k, v):xs)
 --   The check stops after examining up to 1000 elements, allowing for
 --   the theoretical model to support an infinite number of elements.
 --
---   ==== Parameters:
+--   __Parameters:__
+--
 --   - A list of pairs @(a, PA)@, where 'a' is the basis vector and 'PA' is
 --     the probability amplitude (a complex number)
 --
---   ==== Returns:
+--   __Returns:__
+--
 --   - 'Bool': 'True' if the vector is normalized, otherwise 'False'
-isNormalized :: [(a, PA)] -> Bool
+isNormalized :: Basis a => [(a, PA)] -> Bool
 isNormalized = go 0 1000
   where
-    go :: Double -> Int -> [(a, PA)] -> Bool
+    go :: Basis a => Double -> Int -> [(a, PA)] -> Bool
     go acc 0 _ = abs acc > 1 - 1e-9
     go acc _ [] = acc > 1 - 1e-9
     go acc n ((_, amp):xs)
       | acc > 1 + 1e-9 = False
       | otherwise = go (acc + magnitude amp ^ (2 :: Int)) (n - 1) xs
 
--- | 'qVector' constructs a **normalized quantum vector** ('QV') from a list of
+-- | 'qVector' constructs a __normalized quantum vector__ ('QV') from a list of
 --   basis vector-amplitude pairs. It ensures the vector is normalized.
 --
---   ==== Parameters:
+--   __Parameters:__
+--
 --   - A list of pairs @(a, PA)@, where 'a' is the basis vector and 'PA' is
 --     the probability amplitude (a complex number)
 --
---   ==== Returns:
+--   __Returns:__
+--
 --   - @QV a@: a quantum vector, represented as an association list of
 --     basis vectors and probability amplitudes
 --
---   ==== Throws:
+--   __Throws:__
+--
 --   - An 'error' with the message *"The quantum vector is not normalized."*
 --     if the sum of squared magnitudes of the probability amplitudes does not equal 1.
 qVector :: Basis a => [(a, PA)] -> QV a
@@ -115,15 +136,17 @@ qVector qv
   | isNormalized qv = qv
   | otherwise = error "The quantum vector is not normalized."
 
--- | 'amplitude' returns the **probability amplitude** associated with a
+-- | 'amplitude' returns the __probability amplitude__ associated with a
 --   given unit vector in the quantum vector.
 --
---   ==== Parameters:
+--   __Parameters:__
+--
 --   - @AssocList a PA@: a quantum vector represented as an association list
 --     of basis vectors and probability amplitudes
 --   - 'a': the basis vector for which to retrieve the amplitude
 --
---   ==== Returns:
+--   __Returns:__
+--
 --   - 'PA': the probability amplitude associated with the basis vector,
 --     or 0 if not found
 amplitude :: Basis a => AssocList a PA -> a -> PA
@@ -136,7 +159,8 @@ instance Basis Integer where
 --   where the amplitude for each integer is given by the reciprocal of
 --   the square root of 2 raised to the power of the integer (except for 0).
 --
---   ==== Returns:
+--   __Returns:__
+--
 --   - @QV Integer@: an infinite quantum vector for 'Integer', represented
 --     as an association list of integers and probability amplitudes
 qInteger :: QV Integer
