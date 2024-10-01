@@ -11,7 +11,7 @@ systems, where the state of one system cannot be described independently of the 
 -}
 module Pairs where
 
-import           BasisStrict (Basis (basis), QV, amplitude, qVector)
+import           Basis (Basis (basis), QV, amplitude, qVector')
 
 instance (Basis a, Basis b) => Basis (a, b) where
   basis = [(a, b) | a <- basis, b <- basis]
@@ -34,4 +34,5 @@ instance (Basis a, Basis b) => Basis (a, b) where
 --   - @QV (a, b)@: A quantum vector representing the tensor product of @qa@ and @qb@,
 --     embodying the combined state of the two systems that may be entangled.
 (&*) :: (Basis a, Basis b) => QV a -> QV b -> QV (a, b)
-qa &* qb = qVector [((a, b), amplitude qa a * amplitude qb b) | (a, b) <- basis]
+qa &* qb =
+  qVector' [((a, b), amplitude qa a * amplitude qb b) | (a, b) <- basis]
