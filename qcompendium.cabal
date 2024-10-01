@@ -1,8 +1,8 @@
 cabal-version:   3.6
 name:            qcompendium
 version:         0.1.0.0
-synopsis:        First attempt to understand QC with Haskell 
-author:          Λ
+synopsis:        Quantum Computing on Haskell [Prof. Amr Sabry, 2003]
+author:          mr. dima
 maintainer:      sobakavosne@gmail.com
 category:        Math
 build-type:      Simple
@@ -28,7 +28,8 @@ library
   import:           shared-deps
   exposed-modules:
     Basis
-    BasisStrict
+    Lazy.Basis
+    Operations
     Pairs
 
   hs-source-dirs:   src
@@ -49,7 +50,8 @@ test-suite qcompendium-test
   main-is:          Spec.hs
   other-modules:
     BasisSpec
-    BasisStrictSpec
+    Lazy.BasisSpec
+    OperationsSpec
     PairsSpec
 
   build-depends:    qcompendium

@@ -1,17 +1,18 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 
-module BasisSpec
+module Lazy.BasisSpec
   ( spec
   ) where
 
-import           Basis             (Colour (Blue, Red, Yellow),
-                                    Move (Horizontal, Vertical), amplitude,
-                                    qVector')
 import           Control.Exception (evaluate)
 import           Data.Bool         (bool)
+import           Lazy.Basis        (Colour (Blue, Red, Yellow),
+                                    Move (Horizontal, Vertical), amplitude,
+                                    qInteger, qVector')
 import           Test.Hspec        (Spec, describe, errorCall, it, shouldBe,
                                     shouldThrow)
-import           Test.QuickCheck   (Arbitrary, arbitrary, elements, property)
+import           Test.QuickCheck   (Arbitrary, arbitrary, choose, elements,
+                                    forAll, property)
 
 instance Arbitrary Move where
   arbitrary = elements [Vertical, Horizontal]
@@ -34,10 +35,18 @@ spec = do
       property $ \c -> do
         let vector = qVector' [(Red, 0.5), (Yellow, 0.7071067812), (Blue, 0.5)]
         amplitude vector c `shouldBe` bool 0.5 0.7071067812 (c == Yellow)
+    it "construct a quantum vector for the Integer type (qInteger)" $
+      forAll (choose (100, 1000)) $ \n -> do
+        let vector = qInteger
+        amplitude vector n `shouldBe` (1 / sqrt (2 ^ n))
     it
       "should throw an error while constructing not a normalized quantum vector for the Colour type" $ do
       evaluate (qVector' [(False, 0.6), (True, 0.4)]) `shouldThrow`
         errorCall "The quantum vector is not normalized."
+  describe "Infinite Quantum Vector (qInteger)" $ do
+    it "retrieve amplitude for a specific positive integers from qInteger" $
+      forAll (choose (100, 1000)) $ \n -> do
+        amplitude qInteger n `shouldBe` (1 / sqrt (2 ^ n))
   describe "Probability Retrieval (amplitude)" $ do
     it "retrieve probability amplitude for the Bool type" $
       property $ \b -> do
@@ -51,3 +60,6 @@ spec = do
       property $ \c -> do
         let vector = qVector' [(Red, 0.5), (Yellow, 1 / sqrt 2), (Blue, 0.5)]
         amplitude vector c `shouldBe` bool 0.5 (1 / sqrt 2) (c == Yellow)
+    it "retrieve probability amplitude for the Integer type (qInteger)" $
+      forAll (choose (100, 1000)) $ \n -> do
+        amplitude qInteger n `shouldBe` (1 / sqrt (2 ^ n))
