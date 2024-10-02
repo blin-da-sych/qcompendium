@@ -38,24 +38,6 @@ newtype Qop a b =
 qop :: (Basis a, Basis b) => [((a, b), PA)] -> Qop a b
 qop = Qop . qVector
 
--- | 'qop'' constructs a __normalized__ quantum operator ('Qop') from a list of
---   basis vector pairs and their associated probability amplitudes. The resulting
---   operator ensures that when applied to a quantum vector, the norm of the vector
---   is preserved (i.e., it acts as a unitary operator).
---
---   __Parameters:__
---
---   - A list of pairs @[((a, b), PA)]@, where 'a' and 'b' are basis vectors
---     and 'PA' is the probability amplitude (a complex number)
---
---   __Returns:__
---
---   - @Qop a b@: a normalized quantum operator, represented as a 'Map' from
---     pairs of basis vectors to probability amplitudes, which ensures the
---     preservation of vector norms.
-qop' :: (Basis a, Basis b) => [((a, b), PA)] -> Qop a b
-qop' = Qop . qVector'
-
 -- | 'qNot' applies the quantum __NOT__ operation (or Pauli-X gate) on a quantum
 --   vector of type @QV Bool@. It flips the probability amplitudes associated
 --   with 'True' and 'False' basis states.

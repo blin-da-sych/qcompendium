@@ -7,9 +7,9 @@ import           Basis             (Rotation (Clockwise, CtrClockwise),
 import           Control.Exception (evaluate)
 import           Data.Bool         (bool)
 import           Data.Complex      (magnitude)
-import           Operations        (hadamard, qApp', qNot, qop, qop')
+import           Operations        (hadamard, qApp, qApp', qNot, qop)
 import           Test.Hspec        (Spec, describe, errorCall, it, shouldBe,
-                                    shouldThrow)
+                                    shouldNotBe, shouldThrow)
 import           Test.QuickCheck   (property)
 
 spec :: Spec
@@ -56,16 +56,19 @@ spec = do
           result = qApp' operator vector
       amplitude result False `shouldBe` 1 / sqrt 2
       amplitude result True `shouldBe` 1 / sqrt 2
-    it "throw an error for a non-normalized operator" $ do
-      let vector = qVector' [(False, 1), (True, 0)]
-          operator = qop' [((False, False), 0.6), ((True, True), 0.6)]
-      evaluate (qApp' operator vector) `shouldThrow`
-        errorCall "The quantum vector is not normalized."
-  describe "Quantum Operator Construction (qop')" $ do
+  describe "Quantum Operator Construction (qop)" $ do
     it "construct a quantum operator from a list of basis-pair amplitudes" $
-      let operator = qop' [((False, False), 0), ((True, True), 1)]
+      let operator = qop [((False, False), 0), ((True, True), 1)]
        in amplitude (qApp' operator (qVector' [(True, 1), (False, 0)])) False `shouldBe`
           0
-    it "throw an error for a non-normalized quantum operator" $ do
-      evaluate (qop' [((False, False), 0.6), ((True, True), 0.6)]) `shouldThrow`
-        errorCall "The quantum vector is not normalized."
+  describe "Quantum Operator Construction (qop) - Unitarity" $ do
+    it "quantum vector operation is unitary" $ do
+      let vector = qVector' [(False, 1), (True, 0)]
+          operator = qop [((False, False), 1), ((True, True), 1)]
+          result = (qApp' operator . qApp' operator) vector
+      vector `shouldBe` result
+    it "quantum vector operation is non-unitary" $ do
+      let vector = qVector' [(False, 0), (True, 1)]
+          operator = qop [((False, False), 0.8)]
+          result = (qApp operator . qApp operator) vector
+      vector `shouldNotBe` result
