@@ -1,7 +1,4 @@
 {-|
-Module      : Basis
-Description : Lazy basis set for quantum vectors and probability amplitudes
-
 This module defines the 'Basis' class and its instances, which represent
 the possible basis vectors for various types that can be used in quantum
 vector spaces.

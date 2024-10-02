@@ -29,6 +29,7 @@ library
   exposed-modules:
     Basis
     Lazy.Basis
+    Lift
     Operations
     Pairs
 
@@ -51,6 +52,7 @@ test-suite qcompendium-test
   other-modules:
     BasisSpec
     Lazy.BasisSpec
+    LiftSpec
     OperationsSpec
     PairsSpec
 

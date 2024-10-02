@@ -1,9 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 {-|
-Module      : Operations
-Description : Quantum operations on quantum vectors and quantum operators
-
 This module defines various quantum operations on quantum vectors ('QV') and
 quantum operators ('Qop'). It provides utility functions to construct quantum
 operators from a list of basis vector pairs and their associated probability

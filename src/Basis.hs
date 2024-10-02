@@ -1,7 +1,4 @@
 {-|
-Module      : BasisStrict
-Description : Strict basis set for quantum vectors and probability amplitudes
-
 This module defines the 'Basis' class and its instances, representing the possible
 basis vectors for various types that can be used in quantum vector spaces. Unlike
 the lazy version, this implementation uses strict data structures such as 'Map' to

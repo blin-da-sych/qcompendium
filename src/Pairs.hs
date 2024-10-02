@@ -1,9 +1,6 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 {-|
-Module      : Pairs
-Description : Tensor product and basis for paired quantum systems
-
 This module provides the '(&*)' operator to compute the tensor product of two quantum
 vectors, combining the states of two quantum systems into a single state. The tensor
 product is fundamental in quantum mechanics, enabling the representation of entangled
