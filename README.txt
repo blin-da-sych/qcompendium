@@ -35,8 +35,18 @@ Quantum notes
 
     P(i) = ∣ci​∣^2
 
-  "Why is it squared? The short answer is that it gives the correct experimental 
+  "Why is it squared? The short answer is that it gives the correct experimental
   predictions for this choice of representation." [3]
+
+  An operator UU is unitary if it satisfies the following condition:
+
+    U†U=I
+
+  where † - the dagger, is often used in mathematics and quantum mechanics to denote
+  the conjugate transpose of a matrix or operator.
+
+  This means that applying UU to any vector should preserve the vector's norm, and
+  the operator should not distort the overall geometry of the vector space.
 
 Quantum data
 
@@ -48,7 +58,7 @@ Quantum data
   amplitudes, each constructor c is interpreted as a unit vector
   |c〉, and + is vector addition.
 
-  Entanglement in Quantum Computing is represented in this module as pairs of 
-  quantum vectors. When using the tensor product operation (&*), the resulting 
+  Entanglement in Quantum Computing is represented in this module as pairs of
+  quantum vectors. When using the tensor product operation (&*), the resulting
   quantum vector reflects the entangled state of the combined systems, demonstrating 
   the correlations between their states.
