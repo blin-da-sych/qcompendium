@@ -54,6 +54,9 @@ instance Basis Rotation where
 instance Basis Colour where
   basis = [Red, Yellow, Blue]
 
+instance (Basis a, Basis b) => Basis (a, b) where
+  basis = [(a, b) | a <- basis, b <- basis]
+
 -- | Type alias 'PA' representing a __probability amplitude__, which is
 --   a complex number.
 type PA = Complex Double
@@ -63,7 +66,7 @@ type PA = Complex Double
 --   probability amplitudes of type 'PA'.
 type QV a = Map a PA
 
--- | 'qVector' constructs a __unnormalized quantum vector__ ('QV') from a Map of
+-- | 'qVector' constructs a __non-normalized quantum vector__ ('QV') from a Map of
 --   basis vector-amplitude pairs.
 --
 --   __Parameters:__
@@ -92,8 +95,9 @@ qVector = fromList
 --
 --   - 'Bool': 'True' if the vector is normalized, otherwise 'False'
 isNormalized :: (Basis a, Ord a) => Map a PA -> Bool
-isNormalized m =
-  abs (sum (map ((^ (2 :: Int)) . magnitude) (elems m)) - 1) < 1e-9
+isNormalized m = abs (sum (map (square . magnitude) (elems m)) - 1) < 1e-9
+  where
+    square = (^ (2 :: Int))
 
 -- | 'qVector' constructs a __normalized quantum vector__ ('QV') from a Map of
 --   basis vector-amplitude pairs. It ensures the vector is normalized.
