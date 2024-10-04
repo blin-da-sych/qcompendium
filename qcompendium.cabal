@@ -29,6 +29,7 @@ library
   exposed-modules:
     Basis
     Lazy.Basis
+    Measurement
     Operations
     Pairs
 
@@ -44,6 +45,7 @@ test-suite qcompendium-test
   other-modules:
     BasisSpec
     Lazy.BasisSpec
+    MeasurementSpec
     OperationsSpec
     PairsSpec
 
