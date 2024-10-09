@@ -9,7 +9,6 @@ module Operations where
 
 import           Basis    (Basis, PA, QV, amplitude, basis, qVector, qVector')
 import           Data.Map (Map)
-import           Pairs    ()
 
 -- | 'Qop' is a __quantum operator__ type alias, which represents a linear operator
 --   on a quantum vector space. It is defined as a 'Map' from pairs of basis vectors

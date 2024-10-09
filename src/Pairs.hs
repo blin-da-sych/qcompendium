@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-orphans #-}
-
 {-|
 This module provides the '(&*)' operator to compute the tensor product of two quantum
 vectors, combining the states of two quantum systems into a single state. The tensor
@@ -9,9 +7,6 @@ systems, where the state of one system cannot be described independently of the 
 module Pairs where
 
 import           Basis (Basis (basis), QV, amplitude, qVector')
-
-instance (Basis a, Basis b) => Basis (a, b) where
-  basis = [(a, b) | a <- basis, b <- basis]
 
 -- | The @&*@ operation represents the __tensor product__ of two quantum vectors.
 --   The resulting quantum vector represents the tensor product of the input quantum vectors

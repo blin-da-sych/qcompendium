@@ -1,3 +1,6 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
+
 {-|
 This module defines the 'Basis' class and its instances, representing the possible
 basis vectors for various types that can be used in quantum vector spaces. Unlike
@@ -8,10 +11,12 @@ strict manner, making it more suitable for finite, concrete basis sets.
 -}
 module Basis where
 
-import           Data.Complex (Complex, magnitude)
-import           Data.Map     (Map, elems, fromList, lookup)
-import           Data.Maybe   (fromMaybe)
-import           Prelude      hiding (lookup)
+import           Data.Complex           (Complex ((:+)), magnitude, realPart)
+import           Data.Map               (Map, elems, fromList, lookup)
+import           Data.Maybe             (fromMaybe)
+import           Prelude                hiding (lookup)
+import           System.Random          (Random (randomR), Uniform)
+import           System.Random.Stateful (uniformM)
 
 -- | A class 'Basis' that defines an abstract representation for a basis set.
 --   The types that are instances of this class represent possible basis vectors
@@ -54,16 +59,40 @@ instance Basis Rotation where
 instance Basis Colour where
   basis = [Red, Yellow, Blue]
 
+instance (Basis a, Basis b) => Basis (a, b) where
+  basis = [(a, b) | a <- basis, b <- basis]
+
 -- | Type alias 'PA' representing a __probability amplitude__, which is
---   a complex number.
+--   a complex number of type @Complex Double@.
 type PA = Complex Double
+
+instance Ord (Complex Double) where
+  compare z1 z2 =
+    case compare (magnitude z1) (magnitude z2) of
+      EQ    -> compare (realPart z1) (realPart z2)
+      other -> other
+
+instance Uniform Double where
+  uniformM = uniformM
+
+instance Uniform PA where
+  uniformM g = do
+    real <- uniformM g
+    imaginary <- uniformM g
+    return (real :+ imaginary)
+
+instance Random PA where
+  randomR (low :+ lowImaginary, high :+ highImaginary) g =
+    let (real, g1) = randomR (low, high) g
+        (imaginary, g2) = randomR (lowImaginary, highImaginary) g1
+     in (real :+ imaginary, g2)
 
 -- | 'QV' is a type alias for a __quantum vector space__ (represented by a map).
 --   The map keys are basis vectors (of type 'a') and the values are complex
 --   probability amplitudes of type 'PA'.
 type QV a = Map a PA
 
--- | 'qVector' constructs a __unnormalized quantum vector__ ('QV') from a Map of
+-- | 'qVector' constructs a __non-normalized quantum vector__ ('QV') from a Map of
 --   basis vector-amplitude pairs.
 --
 --   __Parameters:__
@@ -92,8 +121,9 @@ qVector = fromList
 --
 --   - 'Bool': 'True' if the vector is normalized, otherwise 'False'
 isNormalized :: (Basis a, Ord a) => Map a PA -> Bool
-isNormalized m =
-  abs (sum (map ((^ (2 :: Int)) . magnitude) (elems m)) - 1) < 1e-9
+isNormalized m = abs (sum (map (square . magnitude) (elems m)) - 1) < 1e-9
+  where
+    square = (^ (2 :: Int))
 
 -- | 'qVector' constructs a __normalized quantum vector__ ('QV') from a Map of
 --   basis vector-amplitude pairs. It ensures the vector is normalized.

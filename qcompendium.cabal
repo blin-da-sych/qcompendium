@@ -21,6 +21,7 @@ common shared-deps
     , hspec
     , hspec-discover
     , QuickCheck
+    , random
 
   ghc-options:   -Wall
 
@@ -29,6 +30,7 @@ library
   exposed-modules:
     Basis
     Lazy.Basis
+    Measurement
     Operations
     Pairs
 
@@ -44,6 +46,7 @@ test-suite qcompendium-test
   other-modules:
     BasisSpec
     Lazy.BasisSpec
+    MeasurementSpec
     OperationsSpec
     PairsSpec
 
