@@ -21,6 +21,7 @@ common shared-deps
     , hspec
     , hspec-discover
     , QuickCheck
+    , random
 
   ghc-options:   -Wall
 
